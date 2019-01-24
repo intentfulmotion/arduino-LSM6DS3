@@ -26,6 +26,7 @@ Distributed as-is; no warranty is given.
 
 #ifndef __LSM6DS3IMU_H__
 #define __LSM6DS3IMU_H__
+#include <Arduino.h>
 
 #include "stdint.h"
 
