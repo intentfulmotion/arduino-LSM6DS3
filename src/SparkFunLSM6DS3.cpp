@@ -48,7 +48,7 @@ Distributed as-is; no warranty is given.
 //  Default construction is I2C mode, address 0x6B.
 //
 //****************************************************************************//
-LSM6DS3Core::LSM6DS3Core( uint8_t busType, uint8_t inputArg) : commInterface(I2C_MODE), I2CAddress(0x6B), chipSelectPin(10)
+LSM6DS3Core::LSM6DS3Core( uint8_t busType, uint8_t inputArg) : commInterface(I2C_MODE), I2CAddress(0x6A), chipSelectPin(10)
 {
 	commInterface = busType;
 	if( commInterface == I2C_MODE )
@@ -69,7 +69,13 @@ status_t LSM6DS3Core::beginCore(void)
 	switch (commInterface) {
 
 	case I2C_MODE:
-		Wire.begin();
+		pinMode(23,INPUT_PULLUP);
+		pinMode(22,INPUT_PULLUP);
+		digitalWrite(26, HIGH);
+		digitalWrite(25, LOW);
+		delay(100);
+
+		Wire.begin(23, 22, 100000L);
 		break;
 
 	case SPI_MODE:

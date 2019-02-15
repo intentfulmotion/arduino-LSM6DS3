@@ -144,7 +144,7 @@ public:
 
 	//Constructor generates default SensorSettings.
 	//(over-ride after construction if desired)
-	LSM6DS3( uint8_t busType = I2C_MODE, uint8_t inputArg = 0x6B );
+	LSM6DS3( uint8_t busType = I2C_MODE, uint8_t inputArg = 0x6A );
 	~LSM6DS3() = default;
 	
 	//Call to apply SensorSettings
