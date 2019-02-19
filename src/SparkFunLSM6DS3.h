@@ -150,6 +150,8 @@ public:
 	//Call to apply SensorSettings
 	status_t begin(void);
 
+	status_t writeSettings(void);
+
 	//Returns the raw bits from the sensor cast as 16-bit signed integers
 	int16_t readRawAccelX( void );
 	int16_t readRawAccelY( void );

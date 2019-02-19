@@ -393,11 +393,24 @@ LSM6DS3::LSM6DS3( uint8_t busType, uint8_t inputArg ) : LSM6DS3Core( busType, in
 //****************************************************************************//
 status_t LSM6DS3::begin()
 {
-	//Check the settings structure values to determine how to setup the device
-	uint8_t dataToWrite = 0;  //Temporary variable
-
 	//Begin the inherited core.  This gets the physical wires connected
 	status_t returnError = beginCore();
+
+	returnError = writeSettings();
+
+	//Return WHO AM I reg  //Not no mo!
+	uint8_t result;
+	readRegister(&result, LSM6DS3_ACC_GYRO_WHO_AM_I_REG);
+
+	return returnError;
+}
+
+status_t LSM6DS3::writeSettings( void )
+{
+	status_t returnError = IMU_SUCCESS;
+
+	//Check the settings structure values to determine how to setup the device
+	uint8_t dataToWrite = 0;  //Temporary variable
 
 	//Setup the accelerometer******************************
 	dataToWrite = 0; //Start Fresh!
@@ -479,15 +492,15 @@ status_t LSM6DS3::begin()
 	}
 
 	//Now, write the patched together data
-	writeRegister(LSM6DS3_ACC_GYRO_CTRL1_XL, dataToWrite);
+	returnError = writeRegister(LSM6DS3_ACC_GYRO_CTRL1_XL, dataToWrite);
 
 	//Set the ODR bit
-	readRegister(&dataToWrite, LSM6DS3_ACC_GYRO_CTRL4_C);
+	returnError = readRegister(&dataToWrite, LSM6DS3_ACC_GYRO_CTRL4_C);
 	dataToWrite &= ~((uint8_t)LSM6DS3_ACC_GYRO_BW_SCAL_ODR_ENABLED);
 	if ( settings.accelODROff == 1) {
 		dataToWrite |= LSM6DS3_ACC_GYRO_BW_SCAL_ODR_ENABLED;
 	}
-	writeRegister(LSM6DS3_ACC_GYRO_CTRL4_C, dataToWrite);
+	returnError = writeRegister(LSM6DS3_ACC_GYRO_CTRL4_C, dataToWrite);
 
 	//Setup the gyroscope**********************************************
 	dataToWrite = 0; //Start Fresh!
@@ -546,15 +559,11 @@ status_t LSM6DS3::begin()
 		//dataToWrite already = 0 (powerdown);
 	}
 	//Write the byte
-	writeRegister(LSM6DS3_ACC_GYRO_CTRL2_G, dataToWrite);
+	returnError = writeRegister(LSM6DS3_ACC_GYRO_CTRL2_G, dataToWrite);
 
 	//Setup the internal temperature sensor
 	if ( settings.tempEnabled == 1) {
 	}
-
-	//Return WHO AM I reg  //Not no mo!
-	uint8_t result;
-	readRegister(&result, LSM6DS3_ACC_GYRO_WHO_AM_I_REG);
 
 	return returnError;
 }
